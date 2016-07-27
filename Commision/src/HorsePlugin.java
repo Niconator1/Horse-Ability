@@ -39,7 +39,7 @@ public class HorsePlugin extends JavaPlugin {
 								// Horse is 0.8 blocks wide/long and player is
 								// 0.3 wide/long
 								for (Player p : h.getWorld().getPlayers()) {
-									if (p.getUniqueId().compareTo(ability.getUser().getUniqueId()) == 0) {
+									if (p.getUniqueId().compareTo(ability.getUser().getUniqueId()) != 0) {
 										double dx = Math.abs(p.getLocation().getX() - h.getLocation().getX());
 										double dz = Math.abs(p.getLocation().getZ() - h.getLocation().getZ());
 										if (dx < 1.1 && dz < 1.1) {
