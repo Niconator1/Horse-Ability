@@ -17,14 +17,17 @@ public class EventManager implements Listener {
 		Player p = e.getPlayer();
 		if (e.getItem() != null) {
 			if (e.getItem().getType() == Material.LEASH) {
+				double yaw = ((p.getLocation().getYaw() + 90) * Math.PI) / 180;
+				double x = Math.cos(yaw);
+				double z = Math.sin(yaw);
+				Vector direction = new Vector(x, 0, z).normalize();
+				Vector vec = rotateAroundAxisY(direction.clone().multiply(2.5), 0.5 * Math.PI);
+				Location start = p.getLocation().add(vec);
+				start.add(direction.clone().multiply(2.5));
 				Horse[] horses = new Horse[5];
 				for (int i = 0; i < 5; i++) {
-					double yaw = ((p.getLocation().getYaw() + 90) * Math.PI) / 180;
-					double x = Math.cos(yaw);
-					double z = Math.sin(yaw);
-					Vector direction = new Vector(x, 0, z).normalize();
-					Location l = p.getLocation().add(direction.clone().multiply(2.5));
-					Horse h = (Horse) p.getWorld().spawnEntity(l, EntityType.HORSE);
+					start.add(vec.clone().normalize().multiply(-1));
+					Horse h = (Horse) p.getWorld().spawnEntity(start, EntityType.HORSE);
 					h.setAdult();
 					h.setVariant(Variant.HORSE);
 					h.setStyle(Style.WHITE);
@@ -32,7 +35,6 @@ public class EventManager implements Listener {
 					h.setAI(false);
 					h.setColor(Color.WHITE);
 					h.setInvulnerable(true);
-					h.setCollidable(false);
 					horses[i] = h;
 					HorseAbility ha = new HorseAbility(p, horses, direction);
 					HorsePlugin.ha.add(ha);
@@ -40,5 +42,14 @@ public class EventManager implements Listener {
 				e.setCancelled(true);
 			}
 		}
+	}
+
+	public static final Vector rotateAroundAxisY(Vector v, double angle) {
+		double x, z, cos, sin;
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
+		x = v.getX() * cos + v.getZ() * sin;
+		z = v.getX() * -sin + v.getZ() * cos;
+		return v.setX(x).setZ(z);
 	}
 }

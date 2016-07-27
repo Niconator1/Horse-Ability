@@ -7,7 +7,7 @@ public class HorseAbility {
 	private Player user;
 	private Horse[] horses;
 	private Vector direction;
-	private int duration = 10*20;
+	private int duration = 8*20;
 
 	public HorseAbility(Player user, Horse[] horses, Vector direction) {
 		this.user = user;

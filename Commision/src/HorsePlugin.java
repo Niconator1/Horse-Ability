@@ -49,7 +49,7 @@ public class HorsePlugin extends JavaPlugin {
 												p.setVelocity(p.getVelocity()
 														.add(p.getLocation().toVector()
 																.subtract(h.getLocation().toVector()).normalize()
-																.setY(0.1).multiply(0.05)));
+																.setY(0.2).multiply(0.05)));
 											}
 										}
 									}
