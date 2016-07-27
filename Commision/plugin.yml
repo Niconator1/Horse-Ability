@@ -1,0 +1,10 @@
+name: HorseAbility
+version: 0.5
+description: >
+  Adds one Horse Ability
+author: Niconator1
+main: HorsePlugin
+load: STARTUP
+
+commands:
+permissions:        
