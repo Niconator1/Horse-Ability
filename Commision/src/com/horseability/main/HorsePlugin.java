@@ -1,3 +1,5 @@
+package com.horseability.main;
+
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -5,6 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
+
+import com.darkblade12.particleeffect.ParticleEffect;
 
 public class HorsePlugin extends JavaPlugin {
 	public static ArrayList<HorseAbility> ha = new ArrayList<HorseAbility>();
@@ -29,10 +34,33 @@ public class HorsePlugin extends JavaPlugin {
 								// 7.7 blocks is sprint speed
 								h.setVelocity(ability.getDirection().clone().multiply(7.7 * 0.05)
 										.setY(h.getVelocity().getY()));
-								Location l1 = h.getLocation().add(ability.getDirection().clone().multiply(0.8));
+								Vector vec = HorseUtil.rotateAroundAxisY(ability.getDirection().clone().multiply(0.8),
+										0.5 * Math.PI);
+								Location start = h.getLocation().add(vec);
+								Location l1 = start.add(ability.getDirection().clone().multiply(0.9));
 								Location l2 = l1.clone().add(0, 1.0, 0);
 								if (l1.getBlock().isEmpty() == false && l1.getBlock().getType().isSolid()) {
 									if (l2.getBlock().isEmpty() == false && l2.getBlock().getType().isSolid()) {
+										ParticleEffect.SMOKE_LARGE.display(0.3f, 0.6f, 0.3f, 0.1f, 50,
+												h.getLocation().add(0, 0.2, 0), 15);
+										h.remove();
+									}
+								}
+								Location l3 = l1.add(vec.multiply(-1));
+								Location l4 = l2.add(vec);
+								if (l3.getBlock().isEmpty() == false && l3.getBlock().getType().isSolid()) {
+									if (l4.getBlock().isEmpty() == false && l4.getBlock().getType().isSolid()) {
+										ParticleEffect.SMOKE_LARGE.display(0.3f, 0.6f, 0.3f, 0.1f, 50,
+												h.getLocation().add(0, 0.2, 0), 15);
+										h.remove();
+									}
+								}
+								Location l5 = l3.add(vec);
+								Location l6 = l4.add(vec);
+								if (l5.getBlock().isEmpty() == false && l5.getBlock().getType().isSolid()) {
+									if (l6.getBlock().isEmpty() == false && l6.getBlock().getType().isSolid()) {
+										ParticleEffect.SMOKE_LARGE.display(0.3f, 0.6f, 0.3f, 0.1f, 50,
+												h.getLocation().add(0, 0.2, 0), 15);
 										h.remove();
 									}
 								}
@@ -60,6 +88,8 @@ public class HorsePlugin extends JavaPlugin {
 					} else {
 						for (int j = 0; j < horses.length; j++) {
 							Horse h = horses[j];
+							ParticleEffect.SMOKE_LARGE.display(0.3f, 0.6f, 0.3f, 0.1f, 50,
+									h.getLocation().add(0, 0.2, 0), 15);
 							h.remove();
 						}
 						ha.remove(i);
@@ -73,5 +103,13 @@ public class HorsePlugin extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		this.getLogger().info("Removing Horses");
+		for (int i = 0; i < ha.size(); i++) {
+			HorseAbility ability = ha.get(i);
+			Horse[] horses = ability.getHorses();
+			for (int j = 0; j < horses.length; j++) {
+				Horse h = horses[j];
+				h.remove();
+			}
+		}
 	}
 }

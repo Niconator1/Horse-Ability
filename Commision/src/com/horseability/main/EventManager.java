@@ -1,3 +1,4 @@
+package com.horseability.main;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 public class EventManager implements Listener {
 	@EventHandler
@@ -20,14 +22,14 @@ public class EventManager implements Listener {
 				double yaw = ((p.getLocation().getYaw() + 90) * Math.PI) / 180;
 				double x = Math.cos(yaw);
 				double z = Math.sin(yaw);
-				Vector direction = new Vector(x, 0, z).normalize();
-				Vector vec = rotateAroundAxisY(direction.clone().multiply(2.5), 0.5 * Math.PI);
-				Location start = p.getLocation().add(vec);
-				start.add(direction.clone().multiply(2.5));
 				Horse[] horses = new Horse[5];
-				for (int i = 0; i < 5; i++) {
-					start.add(vec.clone().normalize().multiply(-1));
+				Vector direction = new Vector(x, 0, z).normalize();
+				Vector vec = HorseUtil.rotateAroundAxisY(direction.clone().multiply((horses.length - 1) * 0.8),
+						0.5 * Math.PI);
+				Location start = p.getLocation().add(direction.clone().multiply(2.5)).add(vec);
+				for (int i = 0; i < horses.length; i++) {
 					Horse h = (Horse) p.getWorld().spawnEntity(start, EntityType.HORSE);
+					start.add(vec.clone().multiply(-2.0 * 1.0 / (horses.length - 1.0)));
 					h.setAdult();
 					h.setVariant(Variant.HORSE);
 					h.setStyle(Style.WHITE);
@@ -44,12 +46,17 @@ public class EventManager implements Listener {
 		}
 	}
 
-	public static final Vector rotateAroundAxisY(Vector v, double angle) {
-		double x, z, cos, sin;
-		cos = Math.cos(angle);
-		sin = Math.sin(angle);
-		x = v.getX() * cos + v.getZ() * sin;
-		z = v.getX() * -sin + v.getZ() * cos;
-		return v.setX(x).setZ(z);
+	@EventHandler
+	public void doMount(EntityMountEvent e) {
+		for (int i = 0; i < HorsePlugin.ha.size(); i++) {
+			HorseAbility ha = HorsePlugin.ha.get(i);
+			for (int j = 0; j < ha.getHorses().length; j++) {
+				Horse h = ha.getHorses()[j];
+				if (h.getUniqueId().compareTo(e.getMount().getUniqueId()) == 0) {
+					e.setCancelled(true);
+				}
+			}
+		}
 	}
+
 }

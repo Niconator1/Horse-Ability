@@ -1,3 +1,4 @@
+package com.horseability.main;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
