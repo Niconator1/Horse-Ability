@@ -3,6 +3,7 @@ package com.horseability.main;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -24,6 +25,16 @@ public class HorsePlugin extends JavaPlugin {
 	private void loopMovement() {
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.getExp() > 0) {
+						p.setExp(p.getExp() - 1.0f / (60.0f * 20.0f));
+						if (p.getExp() > 0) {
+							p.setLevel((int) Math.round(p.getExp() / 1.0 * 60.0));
+						} else {
+							p.setLevel(0);
+						}
+					}
+				}
 				for (int i = 0; i < ha.size(); i++) {
 					HorseAbility ability = ha.get(i);
 					Horse[] horses = ability.getHorses();
@@ -73,11 +84,13 @@ public class HorsePlugin extends JavaPlugin {
 										if (dx < 1.1 && dz < 1.1) {
 											double dy = p.getLocation().getY() - h.getLocation().getY();
 											if (dy < 1.3964844 && dy > -1.8) {
-												p.damage(4.0);
-												p.setVelocity(p.getVelocity()
-														.add(p.getLocation().toVector()
-																.subtract(h.getLocation().toVector()).normalize()
-																.setY(0.2).multiply(0.05)));
+												if(p.getGameMode()==GameMode.ADVENTURE||p.getGameMode()==GameMode.SURVIVAL){
+													p.damage(4.0);
+													p.setVelocity(p.getVelocity()
+															.add(p.getLocation().toVector()
+																	.subtract(h.getLocation().toVector()).normalize()
+																	.setY(0.2).multiply(0.05)));
+												}
 											}
 										}
 									}
